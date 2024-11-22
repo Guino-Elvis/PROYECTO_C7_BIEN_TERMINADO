@@ -2,7 +2,11 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Category;
+use App\Models\Departamento;
+use App\Models\Distrito;
 use App\Models\OfertaLaboral;
+use App\Models\Provincia;
 use Livewire\Component;
 
 class PageBuscarSueldoResultado extends Component
@@ -10,30 +14,110 @@ class PageBuscarSueldoResultado extends Component
     public $categoriaSeleccionada;
     public $localidadSeleccionada;
 
+    public $search;
+    public $searchUbi;
+
+    public $localidades = []; // Resultados de ubicación
+    public $categorias = []; // Resultados de categorías
+
+    public function selectCategoria($categoria)
+    {
+        $this->search = $categoria; // Actualiza el campo de búsqueda con la categoría seleccionada
+        $this->categoriaSeleccionada = $categoria; // Guarda la categoría seleccionada
+        $this->categorias = []; // Limpia los resultados de búsqueda
+    }
+
+    // Método para seleccionar localidad
+    public function selectLocalidad($localidad)
+    {
+        $this->searchUbi = $localidad; // Actualiza el campo de búsqueda con la localidad seleccionada
+        $this->localidadSeleccionada = $localidad; // Guarda la localidad seleccionada
+        $this->localidades = []; // Limpia los resultados de búsqueda
+    }
+
+    public function updatedSearch()
+    {
+        $this->categorias = []; // Limpiar resultados anteriores
+
+        // Búsqueda de categorías que coincidan con el término ingresado
+        if (!empty($this->search)) {
+            $categorias = Category::where('name', 'like', '%' . $this->search . '%')->get();
+            foreach ($categorias as $categoria) {
+                $this->categorias[] = $categoria;
+            }
+        }
+    }
+
+    // Método para actualizar la búsqueda de ubicaciones
+    public function updatedSearchUbi()
+    {
+        $this->localidades = []; // Limpiar resultados anteriores
+
+        // Búsqueda en Departamentos
+        if (!empty($this->searchUbi)) {
+            $departamentos = Departamento::where('name', 'like', '%' . $this->searchUbi . '%')->get();
+            foreach ($departamentos as $departamento) {
+                $this->localidades[] = [
+                    'type' => 'Departamento',
+                    'name' => $departamento->name,
+                ];
+            }
+
+            // Búsqueda en Provincias
+            $provincias = Provincia::where('name', 'like', '%' . $this->searchUbi . '%')->get();
+            foreach ($provincias as $provincia) {
+                $this->localidades[] = [
+                    'type' => 'Provincia',
+                    'name' => $provincia->name,
+                ];
+            }
+
+            // Búsqueda en Distritos
+            $distritos = Distrito::where('name', 'like', '%' . $this->searchUbi . '%')->get();
+            foreach ($distritos as $distrito) {
+                $this->localidades[] = [
+                    'type' => 'Distrito',
+                    'name' => $distrito->name,
+                ];
+            }
+        }
+    }
+
     public function mount()
     {
         // Obtener los valores de la sesión
         $this->categoriaSeleccionada = session('categoria');
         $this->localidadSeleccionada = session('localidad');
+        // Asignar valores iniciales a las búsquedas
+        $this->search = $this->categoriaSeleccionada;
+        $this->searchUbi = $this->localidadSeleccionada;
     }
 
     public function render()
     {
-        // Obtener las ofertas laborales filtradas por categoría y localidad
-        $ofertas = OfertaLaboral::whereHas('category', function ($query) {
-            // Filtrar por categoría seleccionada
-            $query->where('name', $this->categoriaSeleccionada);
+        $categorias = $this->categorias;
+        $localidades = $this->localidades;
+        // Si no hay valores en la sesión, usar $search y $searchUbi para buscar
+        $categoria = $this->categoriaSeleccionada ?? $this->search;
+        $localidad = $this->localidadSeleccionada ?? $this->searchUbi;
+
+        // Obtener las ofertas laborales filtradas
+        $ofertas = OfertaLaboral::when($categoria, function ($query) use ($categoria) {
+            $query->whereHas('category', function ($q) use ($categoria) {
+                $q->where('name', 'like', '%' . $categoria . '%');
+            });
         })
-            ->where(function ($query) {
-                // Filtrar por localidad seleccionada (departamento, provincia o distrito)
-                $query->whereHas('departamento', function ($query) {
-                    $query->where('name', $this->localidadSeleccionada);
-                })
-                    ->orWhereHas('provincia', function ($query) {
-                    $query->where('name', $this->localidadSeleccionada);
-                })
-                    ->orWhereHas('distrito', function ($query) {
-                    $query->where('name', $this->localidadSeleccionada);
+            ->when($localidad, function ($query) use ($localidad) {
+                $query->where(function ($q) use ($localidad) {
+                    $q->whereHas('departamento', function ($q) use ($localidad) {
+                        $q->where('name', 'like', '%' . $localidad . '%');
+                    })
+                        ->orWhereHas('provincia', function ($q) use ($localidad) {
+                            $q->where('name', 'like', '%' . $localidad . '%');
+                        })
+                        ->orWhereHas('distrito', function ($q) use ($localidad) {
+                            $q->where('name', 'like', '%' . $localidad . '%');
+                        });
                 });
             })
             ->get();
@@ -41,62 +125,60 @@ class PageBuscarSueldoResultado extends Component
         // Obtener las IDs de las ofertas ya filtradas
         $ofertaIds = $ofertas->pluck('id')->toArray();
 
-        // Obtener ofertas similares (mismo categoría y localidad)
+        // Obtener el sueldo más alto de las ofertas filtradas
+        $sueldoMaximo = $ofertas->isNotEmpty() ? $ofertas->max('remuneracion') : 0; // Si no hay resultados, usar 0
+
+        // Obtener ofertas similares en la misma categoría con mejor sueldo
         $similares = OfertaLaboral::whereHas('category', function ($query) {
             // Filtrar por categoría seleccionada
             $query->where('name', $this->categoriaSeleccionada);
         })
-            ->where(function ($query) {
-                // Filtrar por localidad seleccionada (departamento, provincia o distrito)
-                $query->whereHas('departamento', function ($query) {
-                    $query->where('name', $this->localidadSeleccionada);
-                })
-                    ->orWhereHas('provincia', function ($query) {
-                    $query->where('name', $this->localidadSeleccionada);
-                })
-                    ->orWhereHas('distrito', function ($query) {
-                    $query->where('name', $this->localidadSeleccionada);
-                });
-            })
+            ->where('remuneracion', '>', $sueldoMaximo) // Solo ofertas con sueldo mayor al máximo filtrado
             ->whereNotIn('id', $ofertaIds) // Excluir las ofertas ya seleccionadas
-            ->take(5) // Limitar a 5 ofertas similares
+            ->orderByDesc('remuneracion') // Ordenar por mejor sueldo
             ->get();
 
-      
-        // Obtener ofertas recomendadas basadas en la remuneración, considerando la categoría
-        $recomendaciones = OfertaLaboral::whereHas('category', function ($query) {
-            // Filtrar por categoría seleccionada
-            $query->where('name', $this->categoriaSeleccionada);
+        // Ofertas recomendadas
+        $recomendaciones = OfertaLaboral::when($categoria, function ($query) use ($categoria) {
+            $query->whereHas('category', function ($q) use ($categoria) {
+                $q->where('name', 'like', '%' . $categoria . '%');
+            });
         })
-            ->where('remuneracion', '>', 0) // Asegurarnos de que la remuneración sea válida
-            ->orderByDesc('remuneracion') // Ordenar por remuneración
-            ->take(5) // Limitar a 5 ofertas de mayor remuneración
+            ->where('remuneracion', '>', 0)
+            ->orderByDesc('remuneracion')
+            // ->take(5)
             ->get();
 
-          // Obtener el promedio de la remuneración para la categoría seleccionada
-          $promedioRemuneracion = OfertaLaboral::whereHas('category', function ($query) {
-            // Filtrar por categoría seleccionada
-            $query->where('name', $this->categoriaSeleccionada);
+        // Promedio de remuneración
+        $promedioRemuneracion = OfertaLaboral::when($categoria, function ($query) use ($categoria) {
+            $query->whereHas('category', function ($q) use ($categoria) {
+                $q->where('name', 'like', '%' . $categoria . '%');
+            });
         })
-            ->avg('remuneracion'); // Obtener el promedio de la columna 'remuneracion'
-        // Obtener las ofertas recientes guardadas en la sesión
+            ->avg('remuneracion');
+
+        // Obtener favoritos recientes
         $favoritosRecientes = session('favoritos_recientes', []);
+        $ofertasSugeridas = collect();
 
-        // Si hay ofertas recientes guardadas, obtenerlas de la base de datos
         if (!empty($favoritosRecientes)) {
-            $ofertasFavoritas = OfertaLaboral::whereIn('id', $favoritosRecientes)
-                ->get();
+            $ofertasFavoritas = OfertaLaboral::whereIn('id', $favoritosRecientes)->get();
 
-            // Filtrar las ofertas que coinciden en categoría y remuneración
             $ofertasSugeridas = OfertaLaboral::whereIn('category_id', $ofertasFavoritas->pluck('category_id')->toArray())
                 ->where('remuneracion', '>', 0)
                 ->orderByDesc('remuneracion')
-                ->take(5) // Limitar a las 5 ofertas más relevantes
+                // ->take(5)
                 ->get();
-        } else {
-            $ofertasSugeridas = collect(); // Si no hay ofertas recientes, mostrar vacío
         }
 
-        return view('pages.page-buscar-sueldo-resultado', compact('ofertas', 'similares', 'recomendaciones', 'ofertasSugeridas','promedioRemuneracion'));
+        return view('pages.page-buscar-sueldo-resultado', compact('ofertas', 'similares', 'recomendaciones', 'ofertasSugeridas', 'promedioRemuneracion', 'categorias', 'localidades'));
+    }
+    public function redirectOtraClase()
+    {
+        // Guardar los valores seleccionados en la sesión
+        session()->put('categoria', $this->search);
+        session()->put('localidad', $this->searchUbi);
+        return Redirect()->route('page.buscar.sueldo.resultados');
+
     }
 }

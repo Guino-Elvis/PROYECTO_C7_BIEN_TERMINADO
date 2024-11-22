@@ -45,7 +45,7 @@ class UserSeeder extends Seeder
             'apellido_m' => 'vargas',
             'dni' => '74349846',
             'direccion' => 'Dirección: Jr. Lampa 594, Cercado de Lima, Lima - Perú',
-            'telefono' => '+51 916882598',
+            'telefono' => '916882598',
             'email_verified_at' => now(),
             'password' => bcrypt('12345678'),
         ]);

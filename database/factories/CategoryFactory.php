@@ -19,16 +19,26 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         $categories = [
-            'Tecnología',
-            'Marketing',
-            'Educación',
-            'Finanzas',
-            'Salud',
-            'Construcción',
-            'Ingeniería',
-            'Arte y Diseño',
-            'Ciencia',
-            'Logística',
+            'Programador/a Web',
+            'Diseñador/a Gráfico',
+            'Ingeniero/a de Software',
+            'Desarrollador/a Frontend',
+            'Desarrollador/a Backend',
+            'Administrador/a de Redes',
+            'Consultor/a de Marketing Digital',
+            'Gestor/a de Proyectos',
+            'Analista de Datos',
+            'Community Manager',
+            'Especialista en SEO',
+            'Diseñador/a UX/UI',
+            'Arquitecto/a',
+            'Abogado/a',
+            'Contador/a',
+            'Médico/a',
+            'Enfermero/a',
+            'Psicólogo/a',
+            'Profesor/a de Matemáticas',
+            'Arquitecto/a de Sistemas',
         ];
 
         $name = $this->faker->unique()->randomElement($categories);
