@@ -8,7 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Postulante extends Model
 {
     use HasFactory;
-    protected $fillable = ['email', 'phone', 'name', 'paterno', 'materno', 'document', 'address', 'tdatos'];
+    protected $fillable = [
+        'email',
+        'phone',
+        'name',
+        'paterno',
+        'materno',
+        'document',
+        'address',
+        'tdatos',
+        'creado',
+    ];
 
     public function aplication()
     {

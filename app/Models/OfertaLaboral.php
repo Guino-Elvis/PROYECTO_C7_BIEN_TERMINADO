@@ -25,7 +25,8 @@ class OfertaLaboral extends Model
         'user_id',
         'departamento_id',
         'provincia_id',
-        'distrito_id'
+        'distrito_id',
+        'creado',
     ];
 
     public function empresa()

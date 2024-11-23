@@ -39,7 +39,6 @@
                         <td scope="col" class="px-6 py-3">Apellido materno</td>
                         <td scope="col" class="px-6 py-3">Dirección</td>
                         <td scope="col" class="px-6 py-3">DNI</td>
-                        <td scope="col" class="px-6 py-3">Codigo postal</td>
                         <td scope="col" class="px-6 py-3">T datos</td>
                         <td scope="col" class="px-6 py-3">Creado</td>
                         <td scope="col" class="px-6 py-3">Actualizado</td>
@@ -61,7 +60,6 @@
                             <td class="p-4 text-center">{{ $client->materno }}</td>
                             <td class="p-4 text-center">{{ $client->address }}</td>
                             <td class="p-4 text-center">{{ $client->document }}</td>
-                            <td class="p-4 text-center">{{ $client->postal }}</td>
                             <td class="p-4 text-center">{{ $client->tdatos }}</td>
                             <td class="p-4 text-center">{{ $client->created_at }}</td>
                             <td class="p-4 text-center">{{ $client->updated_at }}</td>

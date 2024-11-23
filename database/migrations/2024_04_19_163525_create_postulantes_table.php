@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('document')->nullable();
             $table->string('address');
             $table->boolean('tdatos')->nullable();
+            $table->dateTime('creado')->nullable();
             $table->timestamps();
         });
     }

@@ -23,6 +23,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('oferta_laboral_id');
             $table->foreign('oferta_laboral_id')->references('id')->on('oferta_laborals')->onDelete('cascade');
+            $table->dateTime('creado')->nullable();
             $table->timestamps();
         });
     }

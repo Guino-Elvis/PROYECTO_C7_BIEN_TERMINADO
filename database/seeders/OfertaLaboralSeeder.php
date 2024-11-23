@@ -13,6 +13,6 @@ class OfertaLaboralSeeder extends Seeder
      */
     public function run(): void
     {
-        OfertaLaboral::factory(30)->create();
+        OfertaLaboral::factory(40)->create();
     }
 }

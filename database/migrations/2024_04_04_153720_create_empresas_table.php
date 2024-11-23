@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('direccion');
             $table->string('telefono');
             $table->string('correo');
-
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->dateTime('creado')->nullable();
             $table->timestamps();
         });
     }

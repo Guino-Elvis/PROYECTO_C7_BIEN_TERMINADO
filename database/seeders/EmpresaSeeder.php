@@ -13,7 +13,7 @@ class EmpresaSeeder extends Seeder
      */
     public function run(): void
     {
-        $empresas = Empresa::factory(4)->create();
+        $empresas = Empresa::factory(10)->create();
 
         foreach ($empresas as $empresa) {
             Image::factory(1)->create([

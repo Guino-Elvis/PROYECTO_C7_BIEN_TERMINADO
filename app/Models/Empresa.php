@@ -9,7 +9,15 @@ class Empresa extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['ra_social', 'ruc', 'direccion', 'telefono', 'correo', 'user_id'];
+    protected $fillable = [
+        'ra_social',
+        'ruc',
+        'direccion',
+        'telefono',
+        'correo',
+        'user_id',
+        'creado',
+    ];
 
     public function oferta_laboral()
     {

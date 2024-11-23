@@ -16,7 +16,8 @@ class Application extends Model
         'documentos',
         'postulante_id',
         'user_id',
-        'oferta_laboral_id'
+        'oferta_laboral_id',
+        'creado',
     ];
 
     public function oferta_laboral()

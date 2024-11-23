@@ -23,7 +23,6 @@ class SisCrudPostulante extends Component
         'postulante.paterno' => 'required',
         'postulante.materno' => 'required',
         'postulante.address' => 'required',
-        'postulante.postal' => 'required',
         'postulante.tdatos' => 'required',
     ];
 
@@ -38,7 +37,6 @@ class SisCrudPostulante extends Component
                 ->orwhere('paterno', 'like', '%' . $this->search . '%')
                 ->orwhere('materno', 'like', '%' . $this->search . '%')
                 ->orwhere('address', 'like', '%' . $this->search . '%')
-                ->orwhere('postal', 'like', '%' . $this->search . '%')
                 ->orwhere('tdatos', 'like', '%' . $this->search . '%');
         })
             ->latest('id')

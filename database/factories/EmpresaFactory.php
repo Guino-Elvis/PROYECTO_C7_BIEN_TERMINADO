@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use App\Models\User;
@@ -17,6 +18,7 @@ class EmpresaFactory extends Factory
      */
     public function definition(): array
     {
+        $fechaCreacion = $this->faker->dateTimeThisYear(); // Genera una fecha aleatoria dentro de este año
 
         return [
             'ra_social' => $this->faker->text(40),
@@ -25,6 +27,7 @@ class EmpresaFactory extends Factory
             'telefono' => $this->faker->numberBetween(9, 100),
             'correo' => $this->faker->unique()->safeEmail(),
             'user_id' => User::all()->random()->id,
+            'creado'=>  $fechaCreacion,
         ];
     }
 }
