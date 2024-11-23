@@ -173,9 +173,7 @@
                 <div class="grid grid-cols-10 gap-5">
                     <x-card col="5">
 
-                        <h3 class="text-xl font-bold leading-none text-gray-900 me-1">Gráfico de Barras Ofertas
-                            Laborales
-                            por mes</h3>
+                        <h3 class="text-xl font-bold leading-none text-gray-900 me-1">Gráfico de Barras de postulaciones mes</h3>
                         <!-- Line Chart -->
                         <div class="w-auto">
                             <livewire:grafico.barra-postulacion />
@@ -198,54 +196,54 @@
         </div>
     </div>
 </div>
+<script>
+    document.getElementById('scraping-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const link = document.getElementById('link').value;
+
+        try {
+            const response = await fetch('http://localhost:3000/start-scraping', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    link_web: link
+                })
+            });
+            const message = await response.text();
+            alert(message);
+        } catch (error) {
+            console.error('Error al iniciar el scraping:', error);
+        }
+    });
+
+    document.getElementById('stop-button').addEventListener('click', async () => {
+        try {
+            const response = await fetch('http://localhost:3000/stop-scraping', {
+                method: 'POST',
+            });
+            const message = await response.text();
+            alert(message);
+        } catch (error) {
+            console.error('Error al detener el scraping:', error);
+        }
+    });
+
+    document.getElementById('shutdown-button').addEventListener('click', async () => {
+        try {
+            const response = await fetch('http://localhost:3000/shutdown-server', {
+                method: 'POST',
+            });
+            const message = await response.text();
+            alert(message);
+            // Opcional: Redirige a otra página o muestra un mensaje de cierre
+        } catch (error) {
+            console.error('Error al apagar el servidor:', error);
+        }
+    });
+</script>
 @section('page-script')
-    <script>
-        document.getElementById('scraping-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const link = document.getElementById('link').value;
-
-            try {
-                const response = await fetch('http://localhost:3000/start-scraping', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        link_web: link
-                    })
-                });
-                const message = await response.text();
-                alert(message);
-            } catch (error) {
-                console.error('Error al iniciar el scraping:', error);
-            }
-        });
-
-        document.getElementById('stop-button').addEventListener('click', async () => {
-            try {
-                const response = await fetch('http://localhost:3000/stop-scraping', {
-                    method: 'POST',
-                });
-                const message = await response.text();
-                alert(message);
-            } catch (error) {
-                console.error('Error al detener el scraping:', error);
-            }
-        });
-
-        document.getElementById('shutdown-button').addEventListener('click', async () => {
-            try {
-                const response = await fetch('http://localhost:3000/shutdown-server', {
-                    method: 'POST',
-                });
-                const message = await response.text();
-                alert(message);
-                // Opcional: Redirige a otra página o muestra un mensaje de cierre
-            } catch (error) {
-                console.error('Error al apagar el servidor:', error);
-            }
-        });
-    </script>
     <script>
         const getChartOptions = () => {
             return {

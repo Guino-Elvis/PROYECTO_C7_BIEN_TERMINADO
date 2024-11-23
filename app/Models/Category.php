@@ -22,12 +22,7 @@ class Category extends Model
         return $this->belongsTo(User::class);
     }
 
-    //Una categoria tiene muchos productos
-    //Relación 1 a *
-    public function products()
-    {
-        return $this->hasMany(Product::class);
-    }
+   
 
     public function oferta_lavoral()
     {

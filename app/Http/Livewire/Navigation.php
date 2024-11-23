@@ -17,8 +17,7 @@ class Navigation extends Component
 
     public function render()
     {
-        //$this->tipoCambioMoneda();
-        $products = Product::where('name', 'like', '%' . $this->search . '%')->latest('id')->get();
+       
 
         $categories = Category::all();
         $this->category = Category::where('slug', $this->categoryName)
@@ -27,7 +26,7 @@ class Navigation extends Component
 
         $registeredIds = session('registered_ids', []);
 
-        return view('livewire.navigation', compact('categories', 'products'));
+        return view('livewire.navigation', compact('categories'));
     }
 
 }

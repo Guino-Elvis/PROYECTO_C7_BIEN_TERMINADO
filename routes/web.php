@@ -20,7 +20,6 @@ use App\Http\Livewire\SisCrudOfertaLaboral;
 use App\Http\Livewire\SisCrudPostulante;
 use App\Http\Livewire\SisValidacionAplication;
 use App\Http\Livewire\TableCategories;
-use App\Http\Livewire\TableProducts;
 use App\Http\Livewire\TableUsers;
 use App\Models\OfertaLaboralReciente;
 use App\Models\User;
@@ -212,7 +211,6 @@ Route::group(
 
             Route::get('/sistema/pagina/tabla-usuarios', TableUsers::class)->name('tabla-usuarios');
             Route::get('/sistema/pagina/tabla-categorias', TableCategories::class)->name('tabla-categorias');
-            Route::get('/sistema/pagina/tabla-productos', TableProducts::class)->name('tabla-productos');
             Route::get('/sistema/pagina/tabla-empresas', SisCrudEmpresa::class)->name('tabla-empresas');
             Route::Resource('empresa', SisCrudEmpresa::class);
 

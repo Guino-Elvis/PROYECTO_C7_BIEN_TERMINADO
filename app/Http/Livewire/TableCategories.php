@@ -111,7 +111,6 @@ class TableCategories extends Component
     }
 
     public function createCSV(){
-        // Obtener los datos de los productos desde la base de datos
         $data = DB::table('categories')->select('id', 'name', 'slug', 'created_at', 'updated_at')->get();
 
         // Crear un archivo CSV
@@ -123,7 +122,7 @@ class TableCategories extends Component
         // Escribir los encabezados de las columnas
         fputcsv($file, ['ID', 'Nombre', 'Slug', 'Creacion', 'Actualizado']);
 
-        // Escribir los datos de los productos
+
         foreach ($data as $category) {
             fputcsv($file, [$category->id, $category->name, $category->slug, $category->created_at, $category->updated_at]);
         }

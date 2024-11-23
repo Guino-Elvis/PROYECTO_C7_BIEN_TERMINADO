@@ -56,6 +56,7 @@ class SisCrudOfertaLaboral extends Component
 
     ];
 
+
     public function render()
     {
 
@@ -119,6 +120,7 @@ class SisCrudOfertaLaboral extends Component
         $distritoId = $this->ofertaLaboral['provincia_id'] ?? null;
         $distritos = Distrito::where('provincia_id', $distritoId)->get();
 
+       
         return view('admin.pages.table-oferta-laboral', compact('ofertaLaborals', 'empresas','categories', 'departamentos', 'provincias', 'distritos',));
     }
 
@@ -137,6 +139,7 @@ class SisCrudOfertaLaboral extends Component
 
         $this->isOpen = true;
         $this->ruteCreate = true;
+        
         $this->reset('ofertaLaboral');
         // $this->resetValidation();
     }
@@ -145,18 +148,6 @@ class SisCrudOfertaLaboral extends Component
     public function store()
     {
         $this->validate();
-        // $ofertaLaboralData = $this->ofertaLaboral;
-
-        // $departamento = Departamento::find($this->ofertaLaboral['departamento']);
-        // $provincia = Provincia::find($this->ofertaLaboral['provincia']);
-        // $distrito = Distrito::find($this->ofertaLaboral['distrito']);
-
-        // // Agregar los IDs de las relaciones de departamento, provincia y distrito
-        // $ofertaLaboralData['departamento_id'] = $departamento->id;
-        // $ofertaLaboralData['provincia_id'] = $provincia->id;
-        // $ofertaLaboralData['distrito_id'] = $distrito->id;
-
-
         // Crear el directorio si no existe
         if (!Storage::disk('public')->exists('documentos_oferta')) {
             Storage::disk('public')->makeDirectory('documentos_oferta');
@@ -230,16 +221,16 @@ class SisCrudOfertaLaboral extends Component
     public function createCSV()
     {
 
-        $data = DB::table('oferta_laborals')->select('id', 'titulo', 'remuneracion', 'descripcion', 'body', 'fecha_inicio', 'fecha_fin', 'limite_postulante', 'ofertaLaboral_id', 'created_at', 'updated_at')->get();
+        $data = DB::table('oferta_laborals')->select('id', 'titulo', 'remuneracion', 'descripcion', 'body', 'fecha_inicio', 'fecha_fin', 'limite_postulante', 'created_at', 'updated_at')->get();
 
 
         $filename = 'reporte_oferta_laboral.csv';
         $filePath = storage_path('app/' . $filename);
 
         $file = fopen($filePath, 'w');
-        fputcsv($file, ['ID', 'TITULO', 'REMUNERACION', 'DESCRIPCION', 'CUERPO', 'FECHA DE INICIO', 'FECHA FIN', 'LIMITE POSTULANTES', 'EMPRESA', 'Creacion', 'Actualizado']);
+        fputcsv($file, ['ID', 'TITULO', 'REMUNERACION', 'DESCRIPCION', 'CUERPO', 'FECHA DE INICIO', 'FECHA FIN', 'LIMITE POSTULANTES', 'Creacion', 'Actualizado']);
         foreach ($data as $item) {
-            fputcsv($file, [$item->id, $item->titulo, $item->remuneracion, $item->descripcion, $item->body, $item->fecha_inicio, $item->fecha_fin, $item->limite_postulante, $item->empresa_id, $item->created_at, $item->updated_at]);
+            fputcsv($file, [$item->id, $item->titulo, $item->remuneracion, $item->descripcion, $item->body, $item->fecha_inicio, $item->fecha_fin, $item->limite_postulante, $item->created_at, $item->updated_at]);
         }
 
         fclose($file);

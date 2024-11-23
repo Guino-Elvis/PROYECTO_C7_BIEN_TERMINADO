@@ -69,7 +69,7 @@
                         
                         <div class="flex-auto">
                             <x-label value="Provincia*" class="font-bold" />
-                            <x-select wire:model="ofertaLaboral.provincia_id" :disabled="!$ofertaLaboral['departamento_id']">
+                            <x-select wire:model="ofertaLaboral.provincia_id" :disabled="!($ofertaLaboral['departamento_id'] ?? null)">
                                 <x-slot name="options">
                                     <option value="" selected>Seleccione...</option>
                                     @foreach ($provincias as $provincia)
@@ -84,7 +84,7 @@
                         
                         <div class="flex-auto">
                             <x-label value="Distrito*" class="font-bold" />
-                            <x-select wire:model="ofertaLaboral.distrito_id" :disabled="!$ofertaLaboral['provincia_id']">
+                            <x-select wire:model="ofertaLaboral.distrito_id" :disabled="!($ofertaLaboral['provincia_id'] ?? null)">
                                 <x-slot name="options">
                                     <option value="" selected>Seleccione...</option>
                                     @foreach ($distritos as $distrito)
@@ -242,7 +242,7 @@
                 event.preventDefault(); // Prevenir el comportamiento predeterminado del enlace
 
                 // URL del documento
-                var url = "{{ asset('storage/' . $ofertaLaboral['documentos_oferta']) }}";
+                var url = "{{ asset('storage/' . ($ofertaLaboral['documentos_oferta'] ?? null)) }}";
 
                 // Cargar el documento PDF
                 pdfjsLib.getDocument(url).promise.then(function(pdf) {
