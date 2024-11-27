@@ -27,12 +27,21 @@
                             <a href="{{ route('salarios.recomentados') }}" class="flex items-center py-2">
                                 {{ trans('Buscar Salarios') }}
                             </a>
+                          
                         </div>
+                        <div
+                            class="pt-4 pb-2 border-b-2 border-transparent hover:border-blue-700  active:border-blue-700 items-center gap-2 text-black text-xs md:text-sm px-6  sm:flex-none ">
+
+                            <a href="{{ route('recoment.user') }}" class="flex items-center py-2">
+                                {{ trans('Recomendaciones') }}
+                            </a>
+                        </div>
+
                         @role('Administrador')
                             <div
                                 class="pt-4 pb-2 border-b-2 border-transparent hover:border-blue-700  active:border-blue-700 items-center gap-2 text-black text-xs md:text-sm px-6  sm:flex-none ">
-                                <a href="{{ route('dashboard-general') }}"
-                                    :active="request()->routeIs('dashboard-general')" class="flex items-center py-2">
+                                <a href="{{ route('dashboard-general') }}" :active="request() - > routeIs('dashboard-general')"
+                                    class="flex items-center py-2">
                                     {{ __('Sistema') }}
                                 </a>
                             </div>
@@ -137,7 +146,7 @@
                                             {{ __('Administrar Cuenta') }}
                                         </div>
 
-                                        <x-dropdown-link href="{{ route('configurar-cuenta-perfil') }}" >
+                                        <x-dropdown-link href="{{ route('configurar-cuenta-perfil') }}">
                                             {{ __('Perfil') }}
                                         </x-dropdown-link>
 
@@ -152,7 +161,8 @@
                                         <!-- Authentication -->
                                         <form method="POST" action="{{ route('logout_user') }}" x-data>
                                             @csrf
-                                            <x-dropdown-link href="{{ route('logout_user') }}" @click.prevent="$root.submit();">
+                                            <x-dropdown-link href="{{ route('logout_user') }}"
+                                                @click.prevent="$root.submit();">
                                                 <i class="fa-solid fa-power-off mr-2"></i>
                                                 {{ __('Cerrar sesión') }}
                                             </x-dropdown-link>

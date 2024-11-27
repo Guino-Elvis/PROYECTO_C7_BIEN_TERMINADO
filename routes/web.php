@@ -5,6 +5,7 @@ use App\Http\Livewire\AccountSettingProfile;
 use App\Http\Livewire\AccountSettingYape;
 //use App\Http\Livewire\SisCrudEmpresa;
 use App\Http\Livewire\DashboardGeneral;
+use App\Http\Livewire\GenerateOferta;
 use App\Http\Livewire\PageBolsaLaboral;
 use App\Http\Livewire\PageBuscarSueldo;
 use App\Http\Livewire\PageBuscarSueldoResultado;
@@ -250,13 +251,14 @@ Route::group(
             Route::get('/resultado-de-postulacion/{id}', PageResulPostulacion::class)->name('resultado.postulacion');
 
             Route::get('/page/favoritos', PageFavoritos::class)->name('favoritos.user');
-           
         });
     }
 );
-
+Route::get('/page/recomendaciones', GenerateOferta::class)->name('recoment.user');
 Route::get('/page/salarios', PageBuscarSueldo::class)->name('salarios.recomentados');
 Route::get('/page/salarios/resultados', PageBuscarSueldoResultado::class)->name('page.buscar.sueldo.resultados');
+
+
 // Route::get('/resultado-de-postulacion/{id}', PageResulPostulacion::class)->name('resultado.postulacion');
 //PAGES
 

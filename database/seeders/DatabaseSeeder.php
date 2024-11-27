@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\Application;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -31,14 +30,14 @@ class DatabaseSeeder extends Seeder
 
         $this->call(RoleSeeder::class);
         $this->call(UserSeeder::class);
-        // $this->call(CategorySeeder::class);
+        $this->call(CategorySeeder::class);
         $this->call(DepartamentoSeeder::class);
         $this->call(ProvinciaSeeder::class);
         $this->call(DistritoSeeder::class);
-        // $this->call(EmpresaSeeder::class);
-        // $this->call(OfertaLaboralSeeder::class);
-        // $this->call(PostulanteSeeder::class);
-        // $this->call(ApplicationSeeder::class);
+        $this->call(EmpresaSeeder::class);
+        $this->call(OfertaLaboralSeeder::class);
+        $this->call(PostulanteSeeder::class);
+        $this->call(ApplicationSeeder::class);
 
     }
 }

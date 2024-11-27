@@ -2,12 +2,13 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\IteracionUser;
 use App\Models\OfertaLaboral;
 use App\Models\OfertaLaboralReciente;
 use Livewire\Component;
-use Illuminate\Http\Request;
 use Yoeunes\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
+
 class PageBolsaLaboral extends Component
 {
 
@@ -17,6 +18,7 @@ class PageBolsaLaboral extends Component
     public $amount = 10;
     public $loadingMore = false;
     public $noMoreResults = false;
+    public $oferta;
 
 
     public function handleClick()
@@ -80,8 +82,47 @@ class PageBolsaLaboral extends Component
     }
     public function obtenerDetallesOferta($id)
     {
+
         $this->primerDetalle = OfertaLaboral::find($id);
+
+        $this->oferta = OfertaLaboral::findOrFail($id);
+
+        $viewedOfertas = session()->get('guardar_ofertas', []);
+
+       
+    
+        // evitar duplicadfos de ofertas
+        if (!in_array($id, $viewedOfertas)) {
+            $viewedOfertas[] = $id;
+        }
+
+        session()->put('guardar_ofertas', $viewedOfertas);
+        
+        //  $asda =   session('')
+        //  dd($viewedOfertas);
+        if (count($viewedOfertas) >= 5) {
+            $this->storeTransaction($viewedOfertas);
+            Toastr::success('🎉 ¡Has desbloqueado nuevas recomendaciones exclusivas! 🎯', '¡Felicidades! 🏆');
+        }
     }
+
+    public function storeTransaction($viewedOfertas)
+    {
+        // Avoid duplicate transactions
+        if (IteracionUser::where('user_id', Auth::user()->id)->where('ofertas', json_encode($viewedOfertas))->exists()) {
+            return;
+        }
+      
+
+        $transaction = new IteracionUser();
+        $transaction->user_id = Auth::user()->id;
+        $transaction->ofertas = json_encode($viewedOfertas);
+        $transaction->save();
+        session()->forget('guardar_ofertas');
+        Toastr::success('¡Tus interacciones han sido guardadas exitosamente para ofrecerte recomendaciones personalizadas!', '¡Éxito!');
+        return response()->json(['message' => 'Transacción guardada correctamente']);
+    }
+
 
     public function toggleFavorite($id)
     {
